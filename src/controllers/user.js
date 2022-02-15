@@ -1,5 +1,5 @@
-const User = require("../models/user");
-const { generateToken } = require("../utils/jwt");
+const User = require('../models/user');
+const { generateToken } = require('../utils/jwt');
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
   const user = await User.findById(id).exec();
 
   if (!user) {
-    return res.status(404).json({ msg: "user not found" });
+    return res.status(404).json({ msg: 'user not found' });
   }
 
   res.json(user);

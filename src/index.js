@@ -1,16 +1,17 @@
-require("dotenv").config();
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
 //将所有middleware 全部用trycatch 包裹
-require("express-async-errors");
-const morgan = require("morgan");
-const router = require('./routes/index')
+require('express-async-errors');
+const connectDB = require('./utils/db');
+const morgan = require('morgan');
+const router = require('./routes/index');
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-
+connectDB();
 //morgan default
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
 app.use(express.json());
 
@@ -18,7 +19,7 @@ app.use(express.json());
 //     res.send('hello')
 // })
 
-app.use("/v1", router);
+app.use('/v1', router);
 
 // connectDB();
 
