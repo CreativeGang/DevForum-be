@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-//将所有middleware 全部用trycatch 包裹
+//try catch every error made by middleware
 require('express-async-errors');
 const connectDB = require('./utils/db');
 const morgan = require('morgan');
