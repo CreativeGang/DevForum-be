@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { generateToken } = require('../utils/jwt');
-const createUser = async (req, res, next) => {
+
+const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   //todo => validation
@@ -8,16 +9,29 @@ const createUser = async (req, res, next) => {
 
   const user = new User({ name, password, email });
 
+  //validate user input
   if (user.validateSync())
     return res.status(400).json({ msg: 'Validation Error.' });
+
+  //Check if the user already exists
+  let userExist = await User.findOne({ email });
+
+  if (userExist) {
+    return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+  }
 
   //hash user document's password with method defined in user model
   await user.hashPassword();
 
   await user.save();
 
-  //新用户注册后就可以直接浏览private route
-  const token = generateToken({ name });
+  //have access to private route after registration
+  const payload = {
+    user: {
+      id: user.id,
+    },
+  };
+  const token = generateToken(payload);
 
   res.json({ name, token });
 };
