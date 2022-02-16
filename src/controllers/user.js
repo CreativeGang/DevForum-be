@@ -1,13 +1,15 @@
 const User = require('../models/user');
 const { generateToken } = require('../utils/jwt');
-
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   //todo => validation
   //todo => existing user by username
 
   const user = new User({ name, password, email });
+
+  if (user.validateSync())
+    return res.status(400).json({ msg: 'Validation Error.' });
 
   //hash user document's password with method defined in user model
   await user.hashPassword();
