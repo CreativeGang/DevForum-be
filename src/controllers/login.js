@@ -7,14 +7,12 @@ const login = async (req, res) => {
 
   //validate user input
   if (
-    !joi.string().email().validate(email).error ||
-    !joi.string().min(1).validate(password).error
+    joi.string().email().validate(email).error ||
+    joi.string().min(1).validate(password).error
   )
-    return res
-      .status(400)
-      .json({
-        errors: [{ msg: 'Email or password cannot be empty or invalid' }],
-      });
+    return res.status(400).json({
+      errors: [{ msg: 'Email or password cannot be empty or invalid' }],
+    });
 
   //Check if the user doesnt exist
 
