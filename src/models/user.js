@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const joi = require("joi");
+const mongoose = require('mongoose');
+const joi = require('joi');
 //hash bcrypt
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 
 const schema = mongoose.Schema({
   name: {
@@ -11,22 +11,22 @@ const schema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 4,
+    minLength: 4,
   },
   email: {
     type: String,
     required: true,
     validate: {
       validator: (email) => {
-        return !joi.string().email().validate(email).error
+        return !joi.string().email().validate(email).error;
       },
-      msg: "Invalid email message",
+      msg: 'Invalid email message',
     },
   },
   posts: [
     {
       type: String,
-      ref: "Post",
+      ref: 'Post',
     },
   ],
 });
@@ -43,6 +43,6 @@ schema.methods.validatePassword = async function (password) {
 };
 
 //collection => users
-const Model = mongoose.model("User", schema);
+const Model = mongoose.model('User', schema);
 
 module.exports = Model;
