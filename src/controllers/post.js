@@ -3,12 +3,6 @@ const User = require('../models/user');
 
 const { validationResult } = require("express-validator");
 
-
-// const post = async (req, res) => {
-//   const { user } = req.user;
-//   res.send(`user_id:${user.id} autehticate successfully`);
-// };
-
 // create a post
 const createPost = async (req, res) => {
   const errors = validationResult(req);
@@ -17,16 +11,14 @@ const createPost = async (req, res) => {
   }
   try {
     const { user } = req.user;
-    console.log(user.id)
     const userData = await User.findById(user.id).select('-password');
-    console.log(userData)
     const newPost = new Post({
       text: req.body.text,
       name: userData.name,
       user: user.id
     })
     const post = await newPost.save();
-    res.json(post)
+    return res.json(post)
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error')
@@ -38,7 +30,7 @@ const createPost = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().sort({ date: -1 });
-    res.json(posts)
+    return res.json(posts)
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error')
@@ -52,7 +44,7 @@ const getPost = async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: 'Post not found' });
     }
-    res.json(post);
+    return res.json(post);
   } catch (err) {
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Post not found' });
@@ -73,13 +65,12 @@ const deletePost = async (req, res) => {
     // check user
     const { user } = req.user;
     console.log(user.id)
-    // const userData = await User.findById(user.id).select('-password');
     if (post.user.toString() !== user.id) {
       console.log(user.id)
       return res.status(401).json({ msg: 'User not authorized' })
     }
     await post.remove()
-    res.json({ msg: 'Post removed' })
+    return res.json({ msg: 'Post removed' })
   } catch (err) {
     console.error(err.message)
     if (err.kind === 'ObjectId') {
@@ -93,23 +84,16 @@ const deletePost = async (req, res) => {
 const addLike = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    // console.log(post.like)
     // check if the posts hae already been 
     const { user } = req.user;
-    console.log("======", user.id)
-    const userData = await User.findById(user.id).select('-password');
-    console.log(userData)
-    console.log(userData.id.toString(), user.id)
-    console.log(post.likes,'likes')
     if (
-      // userData._id.toString() === user.id
       post.likes.filter(like => like.user.toString() === user.id ).length > 0
     ) {
       return res.status(400).json({ msg: 'Post already liked' })
     }
     post.likes.unshift({ user: user.id })
     await post.save()
-    res.json(post.likes);
+    return res.json(post.likes);
   } catch (err) {
     console.error(err.message)
     res.status(500).send('Server Error')
@@ -132,7 +116,7 @@ const deleteLike = async (req, res) => {
     const removeIndex = post.likes.map(like => like.id.toString()).indexOf(user.id)
     post.likes.splice(removeIndex, 1)
     await post.save()
-    res.json(post.likes);
+    return res.json(post.likes);
   } catch (err) {
     console.error(err.message)
     res.status(500).send('Server Error')
@@ -140,7 +124,6 @@ const deleteLike = async (req, res) => {
 }
 
 module.exports = {
-  // post,
   createPost,
   getAllPosts,
   getPost,
