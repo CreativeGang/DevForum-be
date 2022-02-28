@@ -21,5 +21,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD [ "node run dev" ]
-
+CMD [ "npm run dev" ]
