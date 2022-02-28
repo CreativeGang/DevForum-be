@@ -20,6 +20,6 @@ COPY . .
 
 EXPOSE 3000
 
-CMD [ "node run dev" ]
+CMD [ "node",  "./src/index.js" ]
 
 
