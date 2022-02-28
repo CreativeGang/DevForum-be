@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
@@ -13,6 +13,7 @@ const PostSchema = new Schema({
   },
   name: {
     type: String,
+    required: true,
   },
   likes: [
     {
@@ -22,8 +23,17 @@ const PostSchema = new Schema({
       },
     },
   ],
+  tags: [
+    {
+      type: String,
+    },
+  ],
   picture: {
     type: String,
+  },
+  category: {
+    type: String,
+    required: true,
   },
   comments: [
     {
@@ -46,8 +56,8 @@ const PostSchema = new Schema({
   ],
   date: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Post', PostSchema);
+module.exports = mongoose.models.Post || mongoose.model('Post', PostSchema);
