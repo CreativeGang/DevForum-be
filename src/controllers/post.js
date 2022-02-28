@@ -1,6 +1,8 @@
+
 const Post = require('../models/Post');
 const User = require('../models/User');
 const filterPost = require('../utils/filter');
+
 
 const { validationResult } = require('express-validator');
 const { query } = require('express');
@@ -144,4 +146,5 @@ module.exports = {
   deletePost,
   addLike,
   deleteLike,
+
 };
