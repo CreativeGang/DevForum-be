@@ -12,6 +12,7 @@ COPY package*.json ./
 
 RUN npm install
 RUN npm install -g express
+
 # If you are building your code for production
 # RUN npm ci --only=production
 
@@ -20,5 +21,5 @@ COPY . .
 
 EXPOSE 3000
 
-CMD [ "node", "./src/index.js" ]
+CMD [ "node run dev" ]
 
