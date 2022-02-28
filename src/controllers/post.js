@@ -78,9 +78,7 @@ const deletePost = async (req, res) => {
     }
     // check user
     const { user } = req.user;
-    console.log(user.id);
     if (post.user.toString() !== user.id) {
-      console.log(user.id);
       return res.status(401).json({ msg: 'User not authorized' });
     }
     await post.remove();
@@ -118,7 +116,7 @@ const addLike = async (req, res) => {
 const deleteLike = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    console.log(post);
+
     // check if the posts has already been liked
     const { user } = req.user;
     if (
