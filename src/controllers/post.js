@@ -1,4 +1,4 @@
-const Post = require('../models/Post');
+const Post = require('../models/post');
 const User = require('../models/user');
 
 const { validationResult } = require("express-validator");
