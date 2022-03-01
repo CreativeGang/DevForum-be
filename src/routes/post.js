@@ -1,20 +1,21 @@
 const express = require('express');
 const postRouter = express.Router();
+const auth = require('../middleware/auth');
 
 const {
-  // post, 
+  // post,
   createPost,
-  getAllPosts,
-  getPost,
+  getPosts,
+  getPostById,
   deletePost,
   addLike,
-  deleteLike, 
-  } = require('../controllers/post');
+  deleteLike,
+} = require('../controllers/post');
 
 // postRouter.post('', post);
-postRouter.post('', createPost);
-postRouter.get('/', getAllPosts);
-postRouter.get('/:id', getPost);
+postRouter.get('/', getPosts);
+postRouter.post('/create_post', auth, createPost);
+postRouter.get('/:id', getPostById);
 postRouter.delete('/:id', deletePost);
 postRouter.put('/like/:id', addLike);
 postRouter.put('/unlike/:id', deleteLike);
