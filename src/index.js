@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('hello');
+  res.send('Hello, Service is listening !');
 });
 
 app.use('/v1', router);
