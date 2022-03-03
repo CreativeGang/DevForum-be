@@ -38,7 +38,7 @@ const login = async (req, res) => {
   };
   const token = generateToken(payload);
 
-  res.json({ TOKEN: token });
+  res.json({ token: token });
 };
 
 module.exports = { login };
