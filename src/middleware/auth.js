@@ -12,7 +12,6 @@ module.exports = (req, res, next) => {
   if (!payload) {
     return res.status(401).send('Invalid token');
   }
-  console.log
   req.user = payload.user;
   return next();
 };
