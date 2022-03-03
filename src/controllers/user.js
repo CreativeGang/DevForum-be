@@ -48,9 +48,6 @@ const getUserById = async (req, res) => {
   res.json(user);
 };
 
-
-
-
 module.exports = {
   createUser,
   getUserById,

@@ -15,7 +15,6 @@ const login = async (req, res) => {
     });
 
   //Check if the user doesnt exist
-
   let user = await User.findOne({ email });
 
   if (!user) {
@@ -37,7 +36,6 @@ const login = async (req, res) => {
     },
   };
   const token = generateToken(payload);
-
   res.json({ token: token });
 };
 
