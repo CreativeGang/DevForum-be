@@ -36,7 +36,7 @@ const getPosts = async (req, res) => {
 
   let queryParam = req.query;
 
-  const { filterByCategory, filterByLatest, filterByTag } =
+  let { filterByCategory, filterByLatest, filterByTag } =
     filterPost(queryParam);
   try {
     const posts = await Post.find(
