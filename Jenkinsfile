@@ -1,65 +1,57 @@
-
 pipeline {
-    
     agent any
     
-    environment{
+//    options {}
+
+//    tools {}
+
+    environment {
         AWS_ACCOUNT_ID="355100329777"
         AWS_DEFAULT_REGION="ap-southeast-2"
+        JENKINS_AWS_ID="p3.aws.credentials"
         IMAGE_REPO_NAME="p3backendimagerepo"
         IMAGE_TAG="Latest"
-        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
-        DOCKER_CONTAINER_NAME = "P3-Backend-Dev"
         AWSCLI_DIR = '/usr/local/bin/'
+        REPOSITORY_URL = "https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
     }
-    
+
     stages {
-        
-        stage ('git checkout') {
+        stage('Git Clone') {
             steps {
+                echo 'Git Cloning..'
                 checkout([$class: 'GitSCM', branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/CreativeGang/DevForum-be.git']]])
             }
         }
-        
-        stage ('Building Docker image'){
+        stage(' Docker Image Building & push') {
             steps {
+                echo 'Building image..'
                 script {
-                    dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                    docker.withRegistry("${REPOSITORY_URL}","ecr:${AWS_DEFAULT_REGION}:${JENKINS_AWS_ID}"){
+                        def myImage = docker.build("${IMAGE_REPO_NAME}")
+                        myImage.push("${IMAGE_TAG}")
+                    }
                 }
             }
         }
-        
-        stage('Loging into AWS ECR'){
+        stage('Deploy') {
             steps {
-                script {
-                    sh '${AWSCLI_DIR}aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
+                echo 'ECS Deploying....'
+                script{
+                    try {
+                            withAWS(region: 'ap-southeast-2', credentials: 'p3.aws.credentials') {
+                                sh '${AWSCLI_DIR}aws ecs update-service --region ap-southeast-2 --cluster p3-ECSCluster --service p3-ECSService --force-new-deployment'
+                            }
+                        
+                        }catch (error) {
+                            print(error)
+                            echo 'Remove Deploy Files'
+                            currentBuild.result = 'FAILURE'
+                        }
+                    }
+                
                 }
             }
         }
-        
-        stage('Pushing into AWS ECR'){
-            steps {
-                script {
-                    sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
-                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-                }
-            }
-        }
-        
-        stage('stop previous containers') {
-            steps {
-                sh 'docker ps -f name=${DOCKER_CONTAINER_NAME} -q | xargs --no-run-if-empty docker container stop'
-                sh 'docker container ls -a -fname=${DOCKER_CONTAINER_NAME} -q | xargs -r docker container rm'
-            }
-        }
-      
-        stage('Docker Run') {
-            steps{
-                script {
-                    sh 'docker run -d -p 3000:3000 --rm --name ${DOCKER_CONTAINER_NAME} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}'
-                }
-            }
-        }
-    }
+    
+//    post {}
 }
-
