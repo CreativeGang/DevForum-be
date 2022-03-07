@@ -26,6 +26,7 @@ const PostSchema = new Schema({
   tags: [
     {
       type: String,
+      required: true,
     },
   ],
   picture: {
