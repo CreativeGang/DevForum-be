@@ -23,11 +23,12 @@ const PostSchema = new Schema({
       },
     },
   ],
-  tags: {
-    type: String,
-    required: true,
-  },
-
+  tags: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   picture: {
     type: String,
   },
