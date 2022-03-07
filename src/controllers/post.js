@@ -1,8 +1,6 @@
-
 const Post = require('../models/Post');
 const User = require('../models/User');
 const filterPost = require('../utils/filter');
-
 
 const { validationResult } = require('express-validator');
 const { query } = require('express');
@@ -14,13 +12,15 @@ const createPost = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { user } = req.user;
+    const user = req.user;
+
     const userData = await User.findById(user.id).select('-password');
     const newPost = new Post({
       text: req.body.text,
       name: userData.name,
       user: user.id,
       category: req.body.category.toLowerCase(),
+      tags: req.body.tags.toLowerCase(),
     });
     const post = await newPost.save();
     return res.json(post);
@@ -36,16 +36,14 @@ const getPosts = async (req, res) => {
 
   let queryParam = req.query;
 
-  const categoryList = ['html', 'css', 'javascript', 'java'];
-  const { filterCategory, filterLatest } = filterPost([
-    queryParam,
-    categoryList,
-  ]);
-
+  const { filterByCategory, filterByLatest, filterByTag } =
+    filterPost(queryParam);
   try {
-    const posts = await Post.find(filterCategory).sort(
-      filterLatest || { text: -1 }
-    );
+    const posts = await Post.find(
+      Object.keys(filterByCategory).length !== 0
+        ? filterByCategory
+        : filterByTag
+    ).sort(filterByLatest || { text: -1 });
     return res.json(posts);
   } catch (err) {
     console.error(err.message);
@@ -146,5 +144,4 @@ module.exports = {
   deletePost,
   addLike,
   deleteLike,
-
 };
