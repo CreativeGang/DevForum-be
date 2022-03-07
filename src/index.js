@@ -5,8 +5,10 @@ require('express-async-errors');
 const connectDB = require('./utils/db');
 const morgan = require('morgan');
 const router = require('./routes/index');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 connectDB();
