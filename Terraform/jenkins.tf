@@ -9,7 +9,8 @@ resource "aws_instance" "JenkinsEC2" {
   tags = {
     Name = "Jenkins-Server"
   }
-    
+
+  user_data = file("userdata.sh")  
 }
 
 
