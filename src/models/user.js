@@ -29,6 +29,9 @@ const schema = mongoose.Schema({
       ref: 'Post',
     },
   ],
+  occupation: {
+    type: String,
+  },
 });
 
 schema.methods.hashPassword = async function () {
