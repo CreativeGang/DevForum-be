@@ -22,7 +22,8 @@ const ProfileSchema = new Schema({
   },
   skills: {
     type: [String],
-    required: [true, 'Please enter your sklills'],
+    required: true,
+    validate: [(value) => value.length > 0, 'Please enter your skills']
   },
   bio: {
     type: String,
