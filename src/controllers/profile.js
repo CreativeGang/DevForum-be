@@ -34,6 +34,7 @@ const createProfile = async (req, res) => {
     instagram,
     linkedin,
   } = req.body;
+  console.log(skills)
   //Build profile object
   const profileFields = {};
   profileFields.user = req.user.id;
@@ -47,13 +48,24 @@ const createProfile = async (req, res) => {
     profileFields.skills = skills.split(',').map((skill) => skill.trim());
   }
   //Build social object
-  profileFields.social = {};
+  // profileFields.social = {};
+  if (youtube) {
+    profileFields.social = {};
+  } else if (twitter) {
+    profileFields.social = {};
+  } else if (facebook) {
+    profileFields.social = {};
+  } else if (linkedin) {
+    profileFields.social = {};
+  } else if (instagram) {
+    profileFields.social = {};
+  }
   if (youtube) profileFields.social.youtube = youtube;
   if (twitter) profileFields.social.twitter = twitter;
   if (facebook) profileFields.social.facebook = facebook;
   if (linkedin) profileFields.social.linkedin = linkedin;
   if (instagram) profileFields.social.instagram = instagram;
-
+console.log(profileFields)
   try {
     let profile = await Profile.findOne({ user: req.user.id });
     if (profile) {
@@ -68,7 +80,10 @@ const createProfile = async (req, res) => {
     //Create
     profile = new Profile(profileFields);
     const error = profile.validateSync();
-    if (error) return res.status(400).json({ msg: 'Validation Error' });
+    if (error) {
+      const errorArray = getValidationError(error);
+      return res.status(400).json({ msg: { errorArray } });
+    }
     await profile.save();
     res.json(profile);
   } catch (err) {
@@ -109,7 +124,11 @@ const deleteProfile = async (req, res) => {
     //Remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     //Remove user
+    // const user = await User.find({ user: req.user.id });
+    // console.log(user)
     await User.findOneAndRemove({ user: req.user.id });
+  
+
     res.json({ msg: 'User deleted' });
   } catch (err) {
     console.error(err.message);

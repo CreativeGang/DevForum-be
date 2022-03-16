@@ -16,7 +16,6 @@ const login = async (req, res) => {
 
   //Check if the user doesnt exist
   let user = await User.findOne({ email });
-
   if (!user) {
     return res
       .status(400)
