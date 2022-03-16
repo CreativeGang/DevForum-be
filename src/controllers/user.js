@@ -48,7 +48,12 @@ const getUserById = async (req, res) => {
   res.json(user);
 };
 
+const getAllUser = async (req, res) => {
+  const users = await User.find().select('-password').exec();
+  res.json(users);
+};
 module.exports = {
   createUser,
   getUserById,
+  getAllUser,
 };
