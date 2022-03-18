@@ -2,7 +2,7 @@ const Profile = require('../models/Profile');
 const request = require('request');
 const User = require('../models/User');
 const getValidationError = require('../utils/getValidationError');
-const upload = require('../utils/InitializeMulter');
+
 const getAuthProfile = async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id }).populate(
@@ -245,15 +245,6 @@ const getGithubRepo = (req, res) => {
   }
 };
 
-const uploadProfilePhoto = (req, res) => {
-  try {
-    res.status(500).send('Server Error');
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
-
 module.exports = {
   getAuthProfile,
   createProfile,
@@ -265,5 +256,4 @@ module.exports = {
   addEducation,
   deleteEducationById,
   getGithubRepo,
-  uploadProfilePhoto,
 };

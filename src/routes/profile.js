@@ -12,7 +12,6 @@ const {
   addEducation,
   deleteEducationById,
   getGithubRepo,
-  uploadProfilePhoto,
 } = require('../controllers/profile');
 
 //@route GET v1/profile/me
@@ -64,10 +63,5 @@ profileRouter.delete('/education/:edu_id', auth, deleteEducationById);
 //@desc GET user repos from Github
 //@access Public
 profileRouter.get('/github/:username', getGithubRepo);
-
-//@route Post v1/profile/upload_profile_Photo
-//@desc upload profile photo
-//@access Private
-profileRouter.post('/upload_profile_photo', uploadProfilePhoto);
 
 module.exports = profileRouter;
