@@ -6,6 +6,7 @@ const connectDB = require('./utils/db');
 const morgan = require('morgan');
 const router = require('./routes/index');
 const cors = require('cors');
+const upload = require('./utils/InitializeMulter');
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,33 @@ app.get('/', (req, res) => {
 app.use('/v1', router);
 
 // connectDB();
+
+// Upload Endpoint
+app.post('/upload', (req, res) => {
+  console.log(upload);
+  upload(req, res, (err) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ msg: `There's some problem with the server` });
+    } else {
+      if (req.file == undefined) {
+        return res.status(400).json({ msg: 'No file uploaded' });
+      } else {
+        res.json({
+          msg: 'File Uploaded!',
+        });
+      }
+    }
+  });
+});
+app.get('/download', (req, res) => {
+  res.sendFile(`${__dirname}/uploads/cat.jpeg`, function (err) {
+    if (err) {
+      return res.status(400).json({ msg: err.message });
+    }
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`server is listening on port ${PORT}`);

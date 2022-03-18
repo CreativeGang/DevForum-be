@@ -2,7 +2,7 @@ const Profile = require('../models/Profile');
 const request = require('request');
 const User = require('../models/User');
 const getValidationError = require('../utils/getValidationError');
-
+const upload = require('../utils/InitializeMulter');
 const getAuthProfile = async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id }).populate(
@@ -34,7 +34,7 @@ const createProfile = async (req, res) => {
     instagram,
     linkedin,
   } = req.body;
-  console.log(skills)
+  console.log(skills);
   //Build profile object
   const profileFields = {};
   profileFields.user = req.user.id;
@@ -65,7 +65,7 @@ const createProfile = async (req, res) => {
   if (facebook) profileFields.social.facebook = facebook;
   if (linkedin) profileFields.social.linkedin = linkedin;
   if (instagram) profileFields.social.instagram = instagram;
-console.log(profileFields)
+  console.log(profileFields);
   try {
     let profile = await Profile.findOne({ user: req.user.id });
     if (profile) {
@@ -127,7 +127,6 @@ const deleteProfile = async (req, res) => {
     // const user = await User.find({ user: req.user.id });
     // console.log(user)
     await User.findOneAndRemove({ user: req.user.id });
-  
 
     res.json({ msg: 'User deleted' });
   } catch (err) {
@@ -246,6 +245,15 @@ const getGithubRepo = (req, res) => {
   }
 };
 
+const uploadProfilePhoto = (req, res) => {
+  try {
+    res.status(500).send('Server Error');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
 module.exports = {
   getAuthProfile,
   createProfile,
@@ -257,4 +265,5 @@ module.exports = {
   addEducation,
   deleteEducationById,
   getGithubRepo,
+  uploadProfilePhoto,
 };
