@@ -78,7 +78,7 @@ const getUserPhoto = async (req, res) => {
     // let getPath = path.join(__dirname, `/../uploads/${user.photo}`);
 
     res.sendFile(
-      path.join(__dirname, `/../uploads/${user.photo}`),
+      path.join(__dirname, `/../../uploads/${user.photo}`),
       function (err) {
         if (err) {
           return res.status(400).json({ msg: err.message });
