@@ -34,7 +34,6 @@ const createProfile = async (req, res) => {
     instagram,
     linkedin,
   } = req.body;
-  console.log(skills);
   //Build profile object
   const profileFields = {};
   profileFields.user = req.user.id;
@@ -65,7 +64,7 @@ const createProfile = async (req, res) => {
   if (facebook) profileFields.social.facebook = facebook;
   if (linkedin) profileFields.social.linkedin = linkedin;
   if (instagram) profileFields.social.instagram = instagram;
-  console.log(profileFields);
+  
   try {
     let profile = await Profile.findOne({ user: req.user.id });
     if (profile) {
@@ -125,7 +124,6 @@ const deleteProfile = async (req, res) => {
     await Profile.findOneAndRemove({ user: req.user.id });
     //Remove user
     // const user = await User.find({ user: req.user.id });
-    // console.log(user)
     await User.findOneAndRemove({ user: req.user.id });
 
     res.json({ msg: 'User deleted' });
