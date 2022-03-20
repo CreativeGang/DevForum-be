@@ -23,12 +23,15 @@ const ProfileSchema = new Schema({
   skills: {
     type: [String],
     required: true,
-    validate: [(value) => value.length > 0, 'Please enter your skills']
+    validate: [(value) => value.length > 0, 'Please enter your skills'],
   },
   bio: {
     type: String,
   },
   githubusername: {
+    type: String,
+  },
+  profilePhoto: {
     type: String,
   },
   experience: [
@@ -113,4 +116,5 @@ const ProfileSchema = new Schema({
   },
 });
 
-module.exports = mongoose.models.Profile || mongoose.model('Profile', ProfileSchema);
+module.exports =
+  mongoose.models.Profile || mongoose.model('Profile', ProfileSchema);

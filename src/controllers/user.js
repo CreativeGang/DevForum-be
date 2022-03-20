@@ -1,5 +1,11 @@
 const User = require('../models/User');
 const { generateToken } = require('../utils/jwt');
+const path = require('path');
+
+const { uploadFile } = require('../utils/amazonS3');
+const fs = require('fs');
+const util = require('util');
+const unlinkFile = util.promisify(fs.unlink);
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -39,7 +45,7 @@ const createUser = async (req, res) => {
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
-  const user = await User.findById(id).exec();
+  const user = await User.findById(id);
 
   if (!user) {
     return res.status(404).json({ msg: 'user not found' });
@@ -49,11 +55,35 @@ const getUserById = async (req, res) => {
 };
 
 const getAllUser = async (req, res) => {
-  const users = await User.find().select('-password').exec();
+  const users = await User.find().select('-password');
   res.json(users);
 };
+
+const uploadUserPhoto = async (req, res) => {
+  try {
+    const file = req.file;
+    const result = await uploadFile(file);
+    let imagePath = result.Location;
+    const user = await User.updateOne(
+      { _id: req.user.id },
+      { photo: imagePath }
+    );
+    if (!user) {
+      return res.status(404).json({ msg: 'user not found' });
+    }
+    await unlinkFile(file.path);
+    res.send({
+      imagePath,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+};
+
 module.exports = {
   createUser,
   getUserById,
   getAllUser,
+  uploadUserPhoto,
 };

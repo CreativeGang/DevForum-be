@@ -3,7 +3,7 @@ const joi = require('joi');
 //hash bcrypt
 const bcrypt = require('bcrypt');
 
-const schema = mongoose.Schema({
+const UserSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -29,23 +29,26 @@ const schema = mongoose.Schema({
       ref: 'Post',
     },
   ],
+  photo: {
+    type: String,
+  },
   occupation: {
     type: String,
   },
 });
 
-schema.methods.hashPassword = async function () {
+UserSchema.methods.hashPassword = async function () {
   //hash original password to => salt (generated after 12 rounds)
   this.password = await bcrypt.hash(this.password, 12);
 };
 
 //
-schema.methods.validatePassword = async function (password) {
+UserSchema.methods.validatePassword = async function (password) {
   //return true, false or error
   return bcrypt.compare(password, this.password);
 };
 
 //collection => users
-const Model = mongoose.model('User', schema);
+const Model = mongoose.model('User', UserSchema);
 
-module.exports = Model;
+module.exports = mongoose.models.User || Model;
