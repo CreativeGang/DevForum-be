@@ -59,42 +59,7 @@ const getAllUser = async (req, res) => {
   res.json(users);
 };
 
-const uploadPhoto = async (req, res) => {
-  try {
-    const user = await User.updateOne(
-      { _id: req.user.id },
-      { photo: req.file.filename }
-    );
-    if (!user) {
-      return res.status(404).json({ msg: 'user not found' });
-    }
-    res.json({
-      msg: 'File Uploaded!',
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
 
-const getUserPhoto = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    // let getPath = path.join(__dirname, `/../uploads/${user.photo}`);
-
-    res.sendFile(
-      path.join(__dirname, `/../../uploads/${user.photo}`),
-      function (err) {
-        if (err) {
-          return res.status(400).json({ msg: err.message });
-        }
-      }
-    );
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
 
 const uploadUserPhoto = async (req, res) => {
   try {
@@ -127,8 +92,6 @@ module.exports = {
   createUser,
   getUserById,
   getAllUser,
-  uploadPhoto,
-  getUserPhoto,
   uploadUserPhoto,
   getProfilePhoto,
 };
