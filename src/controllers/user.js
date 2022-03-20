@@ -64,16 +64,16 @@ const uploadUserPhoto = async (req, res) => {
     const file = req.file;
     const result = await uploadFile(file);
     let imagePath = result.Location;
-    const user = await User.updateOne(
-      { _id: req.user.id },
-      { photo: imagePath }
-    );
+    const user = await User.findByIdAndUpdate(req.user.id, {
+      photo: imagePath,
+    });
     if (!user) {
-      return res.status(404).json({ msg: 'user not found' });
+      return res.status(404).json({ msg: 'Error:user not found' });
     }
     await unlinkFile(file.path);
-    res.send({
+    res.json({
       imagePath,
+      msg: 'Photo Uploaded',
     });
   } catch (err) {
     console.error(err.message);
