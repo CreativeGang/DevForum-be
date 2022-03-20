@@ -65,7 +65,7 @@ const uploadUserPhoto = async (req, res) => {
   try {
     const file = req.file;
     const result = await uploadFile(file);
-    let imagePath = `${process.env.REACT_APP_BASE_URL}/users/get_user_photo/${result.Key}`;
+    let imagePath = `${process.env.AWS_FETCH_PHOTO_BASE_URL}/users/get_user_photo/${result.Key}`;
     const user = await User.updateOne(
       { _id: req.user.id },
       { photo: imagePath }
