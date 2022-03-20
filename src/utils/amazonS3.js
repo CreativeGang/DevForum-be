@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const S3 = require('aws-sdk/clients/s3');
 
@@ -20,20 +21,9 @@ function uploadFile(file) {
   const uploadParams = {
     Bucket: bucketName,
     Body: fileStream,
-    Key: file.filename,
+    Key: `uploads/userprofile/${uuidv4()}_.${file.filename}`,
   };
 
   return s3.upload(uploadParams).promise();
 }
 exports.uploadFile = uploadFile;
-
-// downloads a file from s3
-function getFileStream(fileKey) {
-  const downloadParams = {
-    Key: fileKey,
-    Bucket: bucketName,
-  };
-
-  return s3.getObject(downloadParams).createReadStream();
-}
-exports.getFileStream = getFileStream;

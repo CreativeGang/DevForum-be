@@ -2,7 +2,7 @@ const User = require('../models/User');
 const { generateToken } = require('../utils/jwt');
 const path = require('path');
 
-const { uploadFile, getFileStream } = require('../utils/amazonS3');
+const { uploadFile } = require('../utils/amazonS3');
 const fs = require('fs');
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
@@ -59,13 +59,11 @@ const getAllUser = async (req, res) => {
   res.json(users);
 };
 
-
-
 const uploadUserPhoto = async (req, res) => {
   try {
     const file = req.file;
     const result = await uploadFile(file);
-    let imagePath = `${process.env.AWS_FETCH_PHOTO_BASE_URL}/users/get_user_photo/${result.Key}`;
+    let imagePath = result.Location;
     const user = await User.updateOne(
       { _id: req.user.id },
       { photo: imagePath }
@@ -83,15 +81,9 @@ const uploadUserPhoto = async (req, res) => {
   }
 };
 
-const getProfilePhoto = async (req, res) => {
-  const key = req.params.key;
-  const readStream = getFileStream(key);
-  readStream.pipe(res);
-};
 module.exports = {
   createUser,
   getUserById,
   getAllUser,
   uploadUserPhoto,
-  getProfilePhoto,
 };

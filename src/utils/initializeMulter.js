@@ -1,6 +1,5 @@
 const multer = require('multer');
 const path = require('path');
-let count = 0;
 
 function checkFileType(file, cb) {
   // Allowed ext
@@ -20,23 +19,14 @@ function checkFileType(file, cb) {
 const storage = multer.diskStorage({
   destination: `${__dirname}/../../uploads/`,
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname +
-        '-' +
-        Date.now() +
-        count +
-        path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
-
 // Init Upload
 module.exports = upload = multer({
   storage: storage,
   limits: { fileSize: 1000000 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
-    count++;
   },
 }).single('file');
