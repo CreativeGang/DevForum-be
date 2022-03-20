@@ -4,7 +4,7 @@ const {
   getUserById,
   getAllUser,
   uploadUserPhoto,
-} = require('../controllers/User');
+} = require('../controllers/user');
 const userRouter = express.Router();
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer');
