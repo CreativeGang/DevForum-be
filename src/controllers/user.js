@@ -2,6 +2,11 @@ const User = require('../models/User');
 const { generateToken } = require('../utils/jwt');
 const path = require('path');
 
+const { uploadFile, getFileStream } = require('../utils/amazonS3');
+const fs = require('fs');
+const util = require('util');
+const unlinkFile = util.promisify(fs.unlink);
+
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -91,10 +96,39 @@ const getUserPhoto = async (req, res) => {
   }
 };
 
+const uploadUserPhoto = async (req, res) => {
+  try {
+    const file = req.file;
+    const result = await uploadFile(file);
+    let imagePath = `${process.env.REACT_APP_BASE_URL}/users/get_user_photo/${result.Key}`;
+    const user = await User.updateOne(
+      { _id: req.user.id },
+      { photo: imagePath }
+    );
+    if (!user) {
+      return res.status(404).json({ msg: 'user not found' });
+    }
+    await unlinkFile(file.path);
+    res.send({
+      imagePath,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+};
+
+const getProfilePhoto = async (req, res) => {
+  const key = req.params.key;
+  const readStream = getFileStream(key);
+  readStream.pipe(res);
+};
 module.exports = {
   createUser,
   getUserById,
   getAllUser,
   uploadPhoto,
   getUserPhoto,
+  uploadUserPhoto,
+  getProfilePhoto,
 };
