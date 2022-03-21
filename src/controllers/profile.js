@@ -1,6 +1,7 @@
 const Profile = require('../models/Profile');
 const request = require('request');
 const User = require('../models/User');
+const Post = require('../models/Post')
 const getValidationError = require('../utils/getValidationError');
 
 const getAuthProfile = async (req, res) => {
@@ -120,12 +121,18 @@ const getProfileById = async (req, res) => {
 const deleteProfile = async (req, res) => {
   try {
     //@todo - Remove users posts
+    await Post.deleteMany({user: req.user.id})
     //Remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     //Remove user
     // const user = await User.find({ user: req.user.id });
+<<<<<<< Updated upstream
     await User.findOneAndRemove({ user: req.user.id });
 
+=======
+    // console.log(user)
+    await User.findOneAndRemove({  _id: req.user.id });
+>>>>>>> Stashed changes
     res.json({ msg: 'User deleted' });
   } catch (err) {
     console.error(err.message);
