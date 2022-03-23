@@ -1,0 +1,17 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "p3ECSContainer",
+            "image": "540303298966.dkr.ecr.us-east-1.amazonaws.com/p3backendimagerepo:tag",
+            "portMappings": [
+                {
+                  "containerPort": 3000,
+                  "hostPort": 0,
+                  "protocol": "tcp"
+                }
+            ],
+            "essential": true
+        }
+    ],
+    "family": "p3ECStask"
+}
