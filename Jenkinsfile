@@ -86,7 +86,7 @@ pipeline {
                         
                         //grap taskrevision number
                         echo 'grap taskrevision number'
-                        taskRevision = sh( script: "aws ecs describe-task-definition --task-definition ${AWS_ECS_TASK} | egrep revision | awk '{print \$2}' | cut -c 1-2", returnStdout: true).trim()
+                        taskRevision = sh( script: "aws ecs describe-task-definition --task-definition ${AWS_ECS_TASK} | egrep revision | awk '{print \$2}' | sed 's/,\$//g'", returnStdout: true).trim()
                         echo "task revision: ${taskRevision}"
                         
                         //update ECS service with new version of task
