@@ -94,8 +94,8 @@ const createProfile = async (req, res) => {
 
 const getAllProfile = async (req, res) => {
   try {
-    const profiles = await Profile.find().populate('user', ['name']);
-    res.json(profiles);
+    const profiles = await Profile.find().populate('user', ['name', 'photo']);
+    return res.json(profiles);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -106,9 +106,9 @@ const getProfileById = async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.params.user_id,
-    }).populate('user', ['name']);
+    }).populate('user', ['name', 'photo']);
     if (!profile) return res.status(400).json({ msg: 'Profile not found' });
-    res.json(profile);
+    return res.json(profile);
   } catch (err) {
     console.error(err.message);
     if (err.kind == 'ObjectId') {
@@ -172,7 +172,7 @@ const deleteExperienceById = async (req, res) => {
     // }
     profile.experience.splice(removeIndex, 1);
     await profile.save();
-    res.json(profile);
+    return res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -200,7 +200,7 @@ const addEducation = async (req, res) => {
       return res.status(400).json({ msg: { errorArray } });
     }
     await profile.save();
-    res.json(profile);
+    return res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -216,7 +216,7 @@ const deleteEducationById = async (req, res) => {
       .indexOf(req.params.edu_id);
     profile.education.splice(removeIndex, 1);
     await profile.save();
-    res.json(profile);
+    return res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -233,9 +233,9 @@ const getGithubRepo = (req, res) => {
     request(option, (err, response, body) => {
       if (err) console.error(error);
       if (response.statusCode !== 200) {
-        res.status(404).json({ msg: 'No Github Profile Found' });
+        return res.status(404).json({ msg: 'No Github Profile Found' });
       }
-      res.json(JSON.parse(body));
+      return res.json(JSON.parse(body));
     });
   } catch (err) {
     console.error(err.message);
