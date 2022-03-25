@@ -125,14 +125,7 @@ const deleteProfile = async (req, res) => {
     //Remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
     //Remove user
-    // const user = await User.find({ user: req.user.id });
-<<<<<<< Updated upstream
-    await User.findOneAndRemove({ user: req.user.id });
-
-=======
-    // console.log(user)
     await User.findOneAndRemove({  _id: req.user.id });
->>>>>>> Stashed changes
     res.json({ msg: 'User deleted' });
   } catch (err) {
     console.error(err.message);
