@@ -34,6 +34,7 @@ profileRouter.get('/', getAllProfile);
 //@access Public
 profileRouter.get('/user/:user_id', getProfileById);
 
+
 //@route DELETE v1/profile/
 //@desc DELETE profile, user & posts
 //@access Private

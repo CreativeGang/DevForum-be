@@ -3,6 +3,7 @@ const joi = require('joi');
 //hash bcrypt
 const bcrypt = require('bcrypt');
 
+
 const UserSchema = mongoose.Schema({
   name: {
     type: String,

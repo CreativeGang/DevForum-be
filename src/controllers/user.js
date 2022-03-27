@@ -6,14 +6,19 @@ const { uploadFile } = require('../utils/amazonS3');
 const fs = require('fs');
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
+const gravatar = require('gravatar');
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
+  const photo = gravatar.url(email, {
+    s: '200',
+    r: 'pg',
+    d: 'mm',
+  });
   //todo => validation
   //todo => existing user by username
-
-  const user = new User({ name, password, email });
+  const user = new User({ name, password, email, photo });
 
   //validate user input
   if (user.validateSync())
