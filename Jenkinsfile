@@ -88,11 +88,14 @@ pipeline {
                         echo 'grap taskrevision number'
                         taskRevision = sh( script: "aws ecs describe-task-definition --task-definition ${AWS_ECS_TASK} | egrep revision | awk '{print \$2}' | sed 's/,\$//g'", returnStdout: true).trim()
                         echo "task revision: ${taskRevision}"
+                        //defind LastTaskRevision to prepare roll back during system incident
+                        //LastTaskRevision = "${taskRevision}" -1
                         
                         //update ECS service with new version of task
                         echo 'update ECS service with new version of task'
                         sh "aws ecs update-service --cluster ${AWS_ECS_CLUSTER} --service ${AWS_ECS_SERVICE} --task-definition p3ECStask:${taskRevision}"
-                     
+                        //update ECS service new last version of task
+                        sh "aws ecs update-service --cluster ${AWS_ECS_CLUSTER} --service ${AWS_ECS_SERVICE} --task-definition p3ECStask:${LastTaskRevision}"
                         
                     }
                 }
