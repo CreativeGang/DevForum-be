@@ -95,7 +95,7 @@ pipeline {
                         echo 'update ECS service with new version of task'
                         sh "aws ecs update-service --cluster ${AWS_ECS_CLUSTER} --service ${AWS_ECS_SERVICE} --task-definition p3ECStask:${taskRevision}"
                         //update ECS service new last version of task
-                        sh "aws ecs update-service --cluster ${AWS_ECS_CLUSTER} --service ${AWS_ECS_SERVICE} --task-definition p3ECStask:${LastTaskRevision}"
+                        //sh "aws ecs update-service --cluster ${AWS_ECS_CLUSTER} --service ${AWS_ECS_SERVICE} --task-definition p3ECStask:${LastTaskRevision}"
                         
                     }
                 }
