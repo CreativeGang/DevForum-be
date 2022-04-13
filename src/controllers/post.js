@@ -38,6 +38,7 @@ const getPosts = async (req, res) => {
 
   let { filterByCategory, filterByLatest, filterByTag } =
     filterPost(queryParam);
+    console.log(filterByCategory, filterByLatest, filterByTag)
   try {
     const posts = await Post.find(
       Object.keys(filterByCategory).length !== 0
@@ -54,7 +55,8 @@ const getPosts = async (req, res) => {
 // get post by id
 const getPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate('user', ['name', 'photo', 'email']);
+    console.log(post.user)
     if (!post) {
       return res.status(404).json({ msg: 'Post not found' });
     }
@@ -77,7 +79,8 @@ const deletePost = async (req, res) => {
       return res.status(404).json({ msg: 'Post not found' });
     }
     // check user
-    const { user } = req.user;
+    const user = req.user;
+    console.log (user)
     if (post.user.toString() !== user.id) {
       return res.status(401).json({ msg: 'User not authorized' });
     }

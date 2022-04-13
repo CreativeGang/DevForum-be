@@ -16,7 +16,7 @@ const {
 postRouter.get('/', getPosts);
 postRouter.post('/create_post', auth, createPost);
 postRouter.get('/:id', getPostById);
-postRouter.delete('/:id', deletePost);
+postRouter.delete('/:id', auth, deletePost);
 postRouter.put('/like/:id', addLike);
 postRouter.put('/unlike/:id', deleteLike);
 

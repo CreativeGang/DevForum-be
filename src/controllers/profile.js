@@ -43,7 +43,8 @@ const createProfile = async (req, res) => {
   if (location) profileFields.location = location;
   if (bio) profileFields.bio = bio;
   if (status) profileFields.status = status;
-  if (githubusername) profileFields.githubusername = githubusername;
+  // if (githubusername) profileFields.githubusername = githubusername;
+  githubusername ?  profileFields.githubusername = githubusername :  profileFields.githubusername = ''
   if (skills) {
     profileFields.skills = skills.split(',').map((skill) => skill.trim());
   }
@@ -106,7 +107,7 @@ const getProfileById = async (req, res) => {
   try {
     const profile = await Profile.findOne({
       user: req.params.user_id,
-    }).populate('user', ['name', 'photo']);
+    }).populate('user', ['name', 'photo','email']);
     if (!profile) return res.status(400).json({ msg: 'Profile not found' });
     return res.json(profile);
   } catch (err) {
